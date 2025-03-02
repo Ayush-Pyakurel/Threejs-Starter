@@ -16,11 +16,13 @@ const aspect = widht / height;
 const near = 0.1;
 const far = 10;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.z = 2;
+camera.position.z = 3;
 
 const scene = new THREE.Scene();
 
 const cameraControl = new OrbitControls(camera, renderer.domElement);
+cameraControl.enableDamping = true;
+cameraControl.dampingFactor = 1;
 
 const geo = new THREE.IcosahedronGeometry(1.0, 2);
 const mat = new THREE.MeshStandardMaterial({
@@ -45,8 +47,11 @@ scene.add(hemiLight);
 
 function animate(t = 0) {
   window.requestAnimationFrame(animate);
-  // mesh.scale.setScalar(Math.cos(t * 0.001) + 1);
+  // console.log(Math, 'math');
+  // mesh.scale.setScalar(Math.cos(t * 0.001));
+
   mesh.rotation.y = t * 0.001;
+  cameraControl.update();
   renderer.render(scene, camera);
 }
 animate();
