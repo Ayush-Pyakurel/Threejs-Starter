@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { OrbitControls } from 'jsm/controls/OrbitControls.js ';
+import getStarfield from './src/stars.js';
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -20,23 +21,38 @@ const far = 10;
 
 const camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far);
 
+const earthGroup = new THREE.Group();
+earthGroup.rotation.z = (-23.4 * Math.PI) / 180;
+
 const earthTexture = new THREE.TextureLoader().load(
   './textures/earthmap1k.jpg'
 );
 const geometry = new THREE.IcosahedronGeometry(1, 12);
 const material = new THREE.MeshStandardMaterial({ map: earthTexture });
 const EarthMesh = new THREE.Mesh(geometry, material);
-scene.add(EarthMesh);
-
+earthGroup.add(EarthMesh);
 const moonTexture = new THREE.TextureLoader().load('./textures/moonmap4k.jpg');
 const moonGeometry = new THREE.IcosahedronGeometry(0.3, 12);
 const moonMaterial = new THREE.MeshStandardMaterial({ map: moonTexture });
 const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
 moonMesh.position.set(2, 1, 0);
 
-scene.add(moonMesh);
+const axesHelper = new THREE.AxesHelper(3);
+// scene.add(axesHelper);
 
-const light = new THREE.HemisphereLight('white', 'white', 4);
+const starTexture = new THREE.TextureLoader().load('./textures/circle.png');
+
+const stars = getStarfield({ numStars: 300000 }, starTexture);
+
+console.log(stars, 'stars');
+
+scene.add(earthGroup);
+scene.add(moonMesh);
+scene.add(stars);
+
+console.log(scene, 'scene');
+
+const light = new THREE.HemisphereLight(0xffffff, 0x444444, 4);
 scene.add(light);
 
 camera.position.z = 5;
